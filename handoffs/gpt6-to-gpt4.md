@@ -5,47 +5,42 @@
 - Confirmed Core schema: `0.5`
 - Drawing repository: `dehghoon/linkoteq-drawing-reconstruction`
 
-## Stage B implementation
-Implemented and locally verified:
-- explicit `vector` / `raster` / `mixed` source classification;
-- stable source/page identity, dimensions, optional DPI and media-type metadata;
-- mixed-page policy preserving native vector geometry as the normalization source space;
-- deterministic ordered preprocessing transform accumulation;
-- affine transforms plus projective transform tracking for perspective correction;
-- normalized page dimensions and immutable preprocessing evidence;
-- bridge from normalized page evidence to unresolved `T_source_to_model`;
-- unresolved engineering scale/units/global placement continue to block Core writeback.
+## Stage C geometry foundation
+Implemented:
+- importer-private `LineSegmentEvidence` with source/page identity, extraction method, and confidence;
+- deterministic axial orientation clustering with wrap-around handling;
+- collinear segment grouping and controlled gap merging;
+- geometric grid-axis candidate reconstruction from segment endpoints;
+- stable deterministic candidate/family/intersection IDs;
+- spacing regularity evidence;
+- cross-family geometric intersections;
+- short-line noise filtering and source-page integrity gates.
 
-Not implemented:
-- concrete PDF/image parser adapters that extract the page metadata from real files;
-- grid geometry extraction;
-- OCR/grid labels;
+The output remains in normalized drawing coordinates as importer-private evidence. It is not a Core `GridLine` and carries no engineering scale/units/model Z.
+
+## Explicitly not implemented
+- YOLO or object detection;
+- OCR/grid labeling;
+- raster line detector execution (Hough/LSD/EDLines);
+- real PDF vector-path extraction adapter;
 - engineering scale calibration;
-- YOLO/object detection;
-- beam/column reconstruction;
-- PyNite/solver calls.
+- canonical Core GridLine writeback from these candidates.
 
 ## Verification evidence
-Focused implementation test executed locally before GitHub write:
-- `python -m pytest -q tests/test_source_normalization.py`
-- result: `7 passed`
-
-Regression reconstruction of current foundation suite plus Stage B tests:
-- `python -m pytest -q`
-- result: `14 passed`
-- note: this regression run used the GitHub-read foundation modules plus the exact Stage B content written in this handoff; repository CI was not available/triggered here.
+- Focused Stage C tests executed locally before GitHub write: `python -m pytest -q` => `8 passed`.
+- The committed grid module and test file were read back from GitHub after write.
+- Full repository suite/CI was not executed after the GitHub write; do not treat the 8-test focused run as full regression evidence.
 
 ## Current blockers
-1. Concrete real-file PDF/image parser adapters are not implemented; source normalization currently begins from explicit extracted page metadata.
-2. Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.
-3. Scale calibration from drawing evidence remains unimplemented; unresolved scale intentionally blocks canonical physical geometry.
+1. Stage C does not yet have a real-file line-extraction adapter; it currently consumes explicit `LineSegmentEvidence`.
+2. Real PDF/image parser adapters remain unimplemented.
+3. Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.
+4. Scale calibration from drawing evidence remains unimplemented; unresolved scale continues to block canonical physical geometry.
 
 ## Exact next action
-Begin Stage C grid geometry extraction on normalized geometry: define importer-private line-segment/grid-candidate evidence, deterministic orientation/collinearity clustering and controlled fixtures. Keep grid axes geometric, do not use detector bounding boxes, and do not start YOLO.
+Complete Stage C by wiring concrete line-extraction adapters to produce normalized `LineSegmentEvidence` from real vector/raster page content. Prefer native vector paths on vector/mixed pages; for raster pages, wire a deterministic line detector adapter. Keep OCR and YOLO out of this task.
 
 ## Forbidden changes
-- Do not map raw pixels directly to Core geometry.
-- Do not infer or invent engineering scale.
-- Do not merge importer-private evidence into canonical Core types.
-- Do not call PyNite directly.
-- Do not modify `linkoteq-structural-core` for importer convenience.
+- Do not map normalized drawing coordinates to Core while engineering scale/units/global placement are unresolved.
+- Do not treat detector bounding boxes as grid axes.
+- Do not start YOLO during grid extraction.
