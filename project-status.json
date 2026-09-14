@@ -3,23 +3,24 @@
   "repository": "dehghoon/linkoteq-drawing-reconstruction",
   "coreVersion": "0.5",
   "overallStatus": "in-progress",
-  "currentStage": "foundation",
+  "currentStage": "source-normalization-and-transforms",
   "stages": {
     "core-contract-and-mapping": "complete",
-    "source-normalization-and-transforms": "not-started",
+    "source-normalization-and-transforms": "in-progress",
     "grid-extraction": "not-started",
     "ocr-grid-labeling": "not-started",
     "scale-calibration": "not-started",
     "column-detection-and-association": "not-started",
     "beam-reconstruction-and-connectivity": "not-started",
     "human-review": "not-started",
-    "core-writeback": "not-started",
+    "core-writeback": "in-progress",
     "integration": "not-started",
     "production-verification": "not-started"
   },
   "blockers": [
-    "No implementation or contract tests yet.",
-    "No controlled reconstruction fixtures committed yet."
+    "Source normalization for real vector/raster/mixed drawing inputs is not implemented yet.",
+    "Core v0.5 fixture is mapper-boundary evidence only; validation against the Core TypeScript validator/CI is not yet wired into this repository.",
+    "Scale calibration from drawing evidence is not implemented; unresolved scale correctly blocks canonical physical geometry writeback."
   ],
   "standaloneMode": true,
   "integration": {
