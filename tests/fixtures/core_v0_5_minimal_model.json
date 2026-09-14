@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "0.5",
+  "project": {
+    "id": "project-fixture-001",
+    "name": "Foundation Fixture",
+    "units": "SI"
+  },
+  "levels": [
+    {
+      "id": "level-L1",
+      "name": "Level 1",
+      "elevation": 3.5
+    }
+  ],
+  "grids": [
+    {
+      "id": "grid-A",
+      "label": "A",
+      "start": {"x": 10.0, "y": 20.0, "z": 3.5},
+      "end": {"x": 30.0, "y": 20.0, "z": 3.5}
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node-A1",
+      "position": {"x": 10.0, "y": 20.0, "z": 3.5},
+      "levelId": "level-L1"
+    }
+  ],
+  "members": [],
+  "surfaces": [],
+  "diaphragms": [],
+  "materials": [],
+  "sections": [],
+  "supports": [],
+  "loadCases": [],
+  "loads": [],
+  "loadCombinations": []
+}
