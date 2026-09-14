@@ -1,0 +1,32 @@
+{
+  "project": "Linkoteq Drawing Reconstruction",
+  "repository": "dehghoon/linkoteq-drawing-reconstruction",
+  "coreVersion": "0.5",
+  "overallStatus": "in-progress",
+  "currentStage": "foundation",
+  "stages": {
+    "core-contract-and-mapping": "complete",
+    "source-normalization-and-transforms": "not-started",
+    "grid-extraction": "not-started",
+    "ocr-grid-labeling": "not-started",
+    "scale-calibration": "not-started",
+    "column-detection-and-association": "not-started",
+    "beam-reconstruction-and-connectivity": "not-started",
+    "human-review": "not-started",
+    "core-writeback": "not-started",
+    "integration": "not-started",
+    "production-verification": "not-started"
+  },
+  "blockers": [
+    "No implementation or contract tests yet.",
+    "No controlled reconstruction fixtures committed yet."
+  ],
+  "standaloneMode": true,
+  "integration": {
+    "target": "Core StructuralModel 0.5",
+    "directPyNiteDependencyAllowed": false
+  },
+  "securityOwner": "GPT-5",
+  "reconstructionOwner": "GPT-6",
+  "orchestrator": "GPT-4"
+}
