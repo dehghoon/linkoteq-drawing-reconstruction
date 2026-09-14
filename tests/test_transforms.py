@@ -8,7 +8,11 @@ from linkoteq_drawing_reconstruction.transforms import (
     Point2D,
     SourceToModelTransform,
     TransformError,
-    UnresolvedTransformError,lass SourceToModelTransform() -> SourceToModelTransform:
+    UnresolvedTransformError,
+)
+
+
+def resolved_transform() -> SourceToModelTransform:
     return SourceToModelTransform(
         source_id="drawing-001",
         page_id="page-1",
