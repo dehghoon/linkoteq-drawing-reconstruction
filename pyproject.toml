@@ -1,0 +1,8 @@
+[project]
+name = "linkoteq-drawing-reconstruction"
+version = "0.1.0"
+description = "Structural drawing reconstruction service for Linkoteq"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
