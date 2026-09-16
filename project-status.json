@@ -3,26 +3,29 @@
   "repository": "dehghoon/linkoteq-drawing-reconstruction",
   "coreVersion": "0.5",
   "overallStatus": "in-progress",
-  "currentStage": "ocr-grid-labeling",
+  "currentStage": "beam-reconstruction-and-connectivity",
   "stages": {
     "core-contract-and-mapping": "complete",
     "source-normalization-and-transforms": "complete",
     "grid-extraction": "complete",
     "ocr-grid-labeling": "in-progress",
-    "scale-calibration": "not-started",
-    "column-detection-and-association": "not-started",
-    "beam-reconstruction-and-connectivity": "not-started",
-    "human-review": "not-started",
+    "scale-calibration": "in-progress",
+    "column-detection-and-association": "in-progress",
+    "beam-reconstruction-and-connectivity": "in-progress",
+    "human-review": "in-progress",
     "core-writeback": "in-progress",
     "integration": "not-started",
     "production-verification": "not-started"
   },
   "blockers": [
     "Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.",
-    "Scale calibration from drawing evidence is not implemented; unresolved scale correctly blocks canonical physical geometry writeback."
+    "Canonical physical geometry writeback remains blocked when a source page has no reliable resolved scale evidence."
   ],
   "verificationEvidence": {
-    "gridExtraction": "Real-file vector PDF [normalized and reconstructed] grid pipeline and raster image [normalized and reconstructed] grid pipeline tests passed in GitHub Actions; user confirmed green CI after commit 58f79c5f601decac3e746d799c4f6c46990a16e1 and status commit."
+    "gridExtraction": "Real-file vector PDF and raster PNG pipelines verified in GitHub Actions.",
+    "scaleCalibration": "Deterministic explicit-evidence scale resolver and unresolved/conflicting scale blocking are covered by tests/test_scale_calibration.py.",
+    "columnAssociation": "Importer-private column association is present and covered by tests/test_column_association.py.",
+    "beamReconstruction": "Beam centerline/endpoint association, review thresholds, and distinct-endpoint-node guard are covered by tests/test_beam_reconstruction.py and tests/test_beam_distinct_endpoints.py; user confirmed green CI after commit 7dd6838."
   },
   "standaloneMode": true,
   "integration": {
