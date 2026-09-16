@@ -1,5 +1,7 @@
 import pytest
 
+from linkoteq_drawing_reconstruction.transforms import Point2D
+
 from linkoteq_drawing_reconstruction.scale_calibration import (
     ScaleObservation,
     UnresolvedScaleError,
@@ -44,7 +46,7 @@ def test_conflicting_evidence_blocks_physical_writeback():
 
 
 def test_evidence_must_share_unit():
-    with pytest.raises(UnresolvedScaleError, match="one length_unit"):
+    with pytest.raises(UnresolvedScaleError, match="share one source page and one length unit"):
         resolve_scale([
             obs("dim-1", 0.125, 6000.0, unit="mm"),
              obs("dim-2", 0.125, 6.0, unit="m"),
@@ -54,6 +56,6 @@ def test_evidence_must_share_unit():
 def test_resolved_scale_produces_deterministic_normalized_to_model_transform():
     result = resolve_scale([obs("dim-1", 0.125, 6000.0)])
     t = result.normalized_to_model_xy(origin_x=1000.0, origin_y=2000.0)
-    p = t.apply_xy((0.25, 0.5))
+    p = t.apply(Point2D(0.25, 0.5))
     assert p.x == pytest.approx(13000.0)
     assert p.y == pytest.approx(26000.0)
