@@ -2,45 +2,47 @@
 
 ## Runtime baseline
 - Core repository: `dehghoon/linkoteq-structural-core`
-- Confirmed Core schema: `0.5`
+- Confirmed Core contract: `0.5`
 - Drawing repository: `dehghoon/linkoteq-drawing-reconstruction`
 
-## Stage C geometry foundation
-Implemented:
-- importer-private `LineSegmentEvidence` with source/page identity, extraction method, and confidence;
+## Stage C - Grid Geometry Extraction
+
+Status: `complete`
+
+Implemented and verified:
+- importer-private `LineSegmentEvidence` with source/page identity, extraction method and confidence;
 - deterministic axial orientation clustering with wrap-around handling;
 - collinear segment grouping and controlled gap merging;
-- geometric grid-axis candidate reconstruction from segment endpoints;
-- stable deterministic candidate/family/intersection IDs;
+- geometric grid-axis candidate reconstruction;
+- stable candidate/family/intersection IDs;
 - spacing regularity evidence;
 - cross-family geometric intersections;
-- short-line noise filtering and source-page integrity gates.
-
-The output remains in normalized drawing coordinates as importer-private evidence. It is not a Core `GridLine` and carries no engineering scale/units/model Z.
-
-## Explicitly not implemented
-- YOLO or object detection;
-- OCR/grid labeling;
-- raster line detector execution (Hough/LSD/EDLines);
-- real PDF vector-path extraction adapter;
-- engineering scale calibration;
-- canonical Core GridLine writeback from these candidates.
+- native vector-PDF line extraction;
+- deterministic raster Canny + Probabilistic Hough line extraction;
+- deterministic source/pixel -> normalized drawing coordinate transforms.
 
 ## Verification evidence
-- Focused Stage C tests executed locally before GitHub write: `python -m pytest -q` => `8 passed`.
-- The committed grid module and test file were read back from GitHub after write.
-- Full repository suite/CI was not executed after the GitHub write; do not treat the 8-test focused run as full regression evidence.
+- Real-file vector PDF -> normalized line eridence -> reconstructed grid coverage is committed.
+ - Real-file raster PNG -> Hough line evidence -> reconstructed grid coverage is committed.
+- GitHub Actions for the latest Stage C tests was confirmed green by the user on 2026-09-16.
+- Stage C closure recorded in `project-status.json` at commit `bab752b508ce0d0791b479c47e5fce86a723dbb8`.
 
-## Current blockers
-1. Stage C does not yet have a real-file line-extraction adapter; it currently consumes explicit `LineSegmentEvidence`.
-2. Real PDF/image parser adapters remain unimplemented.
-3. Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.
-4. Scale calibration from drawing evidence remains unimplemented; unresolved scale continues to block canonical physical geometry.
+## Boundary conditions
+- Grid geometry output remains importer-private normalized-drawing evidence.
+- It is not yet canonical Core physical geometry.
+- Unresolved engineering scale must block physical-geometry writeback.
+ - Do not map raw detector bounding boxes to Core grid axes.
+- Do not call PyNite directly.
 
-## Exact next action
-Complete Stage C by wiring concrete line-extraction adapters to produce normalized `LineSegmentEvidence` from real vector/raster page content. Prefer native vector paths on vector/mixed pages; for raster pages, wire a deterministic line detector adapter. Keep OCR and YOLO out of this task.
+## Current stage: OCR & Grid Labeling
 
-## Forbidden changes
-- Do not map normalized drawing coordinates to Core while engineering scale/units/global placement are unresolved.
-- Do not treat detector bounding boxes as grid axes.
-- Do not start YOLO during grid extraction.
+GPT-6 next owned work:
+- define importer-private OCR evidence with source/page provenance, bounding geometry, text, confidence and engine/version;
+- detect grid bubble/label regions and run OCR as evidence, not canonical geometry;
+- associate label evidence to reconstructed grid axes using geometric proximity/endpoint bubble eridence;
+- preserve ambiguous/competing labels as review-required;
+- add deterministic tests before scale calibration.
+
+## Remaining cross-product blockers
+1. Core v0.5 fixture validation is not yet wired to the Core TypeScript validator/CI.
+2. Scale calibration is not yet implemented; unresolved scale correctly blocks canonical physical geometry writeback.
