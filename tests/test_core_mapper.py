@@ -2,10 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-import linkoteq_drawing_reconstruction.core_mapper as _core_mapper_diagnostic
-print("PYTEST_MODULE:", _core_mapper_diagnostic.__file__)
-print("PYTEST_ACCEPTED_NODE:", hasattr(_core_mapper_diagnostic, "AcceptedNode"))
-print("PYTEST_NAMES:", sorted(x for x in dir(_core_mapper_diagnostic)  if x.startswith("Accepted"))
 
 from linkoteq_drawing_reconstruction.core_mapper import (
     CORE_SCHEMA_VERSION,
