@@ -59,7 +59,7 @@ def _nearest(point: Point2D, nodes: Sequence[StructuralNodeEvidence]) -> tuple[S
         return None
     ranked = sorted(
         ((hypot(point.x - n.point.x, point.y - n.point.y), n.id, n) for n in nodes),
-        key=lambda v: (v 0], v\1]),
+        key=lambda v: (v[0], v[1]),
     )
     d, _, n = ranked[0]
     return n, d
