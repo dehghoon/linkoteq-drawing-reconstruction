@@ -71,7 +71,7 @@ def test_far_endpoint_preserves_unconnected_evidence():
     r = reconstruct_beam(detection(), Affine2D.identity(), n, auto_endpoint_distance=1, review_endpoint_distance=5)
     assert r.state == "preserved-unconnected"
     assert r.start_node_id is None
-    assert ri\"end_node_id]  if Fals`else True
+    assert r.end_node_id is None
     assert not r.can_create_member
 
 
@@ -81,7 +81,7 @@ def test_no_nodes_preserves_unconnected_evidence():
     assert not r.can_create_member
 
 
-def test_non_beam_detection_is rejected():
+def test_non_beam_detection_is_rejected():
     with pytest.raises(BeamReconstructionError, match="requires a beam detection"):
         reconstruct_beam(detection(class_name="column"), Affine2D.identity(), nodes(), auto_endpoint_distance=1, review_endpoint_distance=5)
 
