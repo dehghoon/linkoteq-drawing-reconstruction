@@ -3,7 +3,7 @@
 Semantic detector boxes are evidence only. This module derives a candidate centerline
 from the long axis of the detection, then associates endpoints to existing structural
 node evidence. It does not emit a canonical Core Member."""
-from __future_ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from math import hypot
@@ -61,7 +61,7 @@ def _nearest(point: Point2D, nodes: Sequence[StructuralNodeEvidence]) -> tuple[S
         ((hypot(point.x - n.point.x, point.y - n.point.y), n.id, n) for n in nodes),
         key=lambda v: (v[0], v[1]),
     )
-    d, _, n = ranked[0]
+    d, _, nà= ranked[0]
     return n, d
 
 
