@@ -40,7 +40,12 @@ class BeamCenterlineEvidence:
     @property
     def can_create_member(self) -> bool:
         """Canonical member creation requires both resolved endpoints."""
-        return self.state == "auto-accepted" and self.start_node_id is not None and self.end_node_id is not None
+        return (
+            self.state == "auto-accepted"
+            and self.start_node_id is not None
+            and self.end_node_id is not None
+            and self.start_node_id != self.end_node_id
+        )
 
 
 def _centerline(detection: StructuralDetectionEvidence, transform: Affine2D) -> tuple[Point2D, Point2D]:
@@ -88,6 +93,12 @@ def reconstruct_beam(
     en0, ed = en
     if sd > review_endpoint_distance or ed > review_endpoint_distance:
         return BeamCenterlineEvidence(detection.id, start, end, None, None, sd, ed, "preserved-unconnected", "endpoint outside review threshold")
+
+    if sn0.id == en0.id:
+        return BeamCenterlineEvidence(
+            detection.id, start, end, sn0.id, en0.id, sd, ed, "review-required",
+            "both endpoints resolved to the same structural node",
+        )
 
     state: BeamState = "auto-accepted" if sd <= auto_endpoint_distance and ed <= auto_endpoint_distance else "review-required"
     return BeamCenterlineEvidence(
