@@ -95,4 +95,5 @@ def test_beam_detection_cannot_enter_column_association():
         associate_column_to_grid(
             detection(class_name="beam"),
             Affine2D.identity(),
-           )
+            (),
+        )
