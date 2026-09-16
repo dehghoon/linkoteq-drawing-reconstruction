@@ -52,4 +52,4 @@ def test_blocks_unresolved_member_writeback(overrides, message):
 
 def test_blocks_empty_member_id():
     with pytest.raises(MemberWritebackError, match="stable id"):
-        to_core_member(_evidence(id="  ")
+        to_core_member(_evidence(id="  "))
