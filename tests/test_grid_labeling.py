@@ -29,5 +29,7 @@ def test_duplicate_label_across_axes_requires_review():
     r=associate_grid_labels(axes,evidence,max_endpoint_distance=5)
     assert [x.status for x in r]==["review-required","review-required"]
 
-def test_unmatched_axis is None:
-    pass
+def test_unmatched_axis requires_review():
+    r=associate_grid_labels((axis("a",0,0,100,0),),(ocr("e1","1",50,50),),max_endpoint_distance=5)
+    assert r[0].label is None
+    assert r[0].status=="review-required"
