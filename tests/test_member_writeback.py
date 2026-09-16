@@ -25,6 +25,7 @@ def _evidence(**overrides):
 def test_emits_core_member_from_fully_resolved_evidence():
     assert to_core_member(_evidence()) == {
         "id": "member-1",
+        "type": "beam",
         "startNodeId": "node-1",
         "endNodeId": "node-2",
         "materialId": "mat-1",
