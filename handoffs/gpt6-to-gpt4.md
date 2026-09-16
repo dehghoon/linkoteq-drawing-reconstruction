@@ -5,44 +5,33 @@
 - Confirmed Core contract: `0.5`
 - Drawing repository: `dehghoon/linkoteq-drawing-reconstruction`
 
-## Stage C - Grid Geometry Extraction
+## Verified baseline
+- Core contract/mapper fixtures are present.
+ - Deterministic source normalization and transform tracking is implemented.
+- Grid geometry extraction is complete with vector-PDF and raster pipeline evidence.
+ - OCR/grid labeling remains in progress.
+ - Explicit-evidence scale calibration is implemented and tested; unresolved or conflicting scale blocks canonical physical-geometry writeback.
+ - Column detection association is implemented as importer-private evidence; a plan detection does not establish vertical member extent.
+- Beam centerline/endpoint reconstruction is implemented with distance-threshold review and a distinct-endpoint-node guard.
 
-Status: `complete`
+## Latest verification evidence
+- User confirmed green GitHub Actions after `test: cover same-node beam endpoint review` (commit `7dd6838`).
+- User confirmed green GitHub Actions after `docs: synchronize reconstruction stage status` (commit `fe6f405`).
+- Project status is aligned to the current implementation layers; it does not claim production verification.
 
-Implemented and verified:
-- importer-private `LineSegmentEvidence` with source/page identity, extraction method and confidence;
-- deterministic axial orientation clustering with wrap-around handling;
-- collinear segment grouping and controlled gap merging;
-- geometric grid-axis candidate reconstruction;
-- stable candidate/family/intersection IDs;
-- spacing regularity evidence;
-- cross-family geometric intersections;
-- native vector-PDF line extraction;
-- deterministic raster Canny + Probabilistic Hough line extraction;
-- deterministic source/pixel -> normalized drawing coordinate transforms.
-
-## Verification evidence
-- Real-file vector PDF -> normalized line eridence -> reconstructed grid coverage is committed.
- - Real-file raster PNG -> Hough line evidence -> reconstructed grid coverage is committed.
-- GitHub Actions for the latest Stage C tests was confirmed green by the user on 2026-09-16.
-- Stage C closure recorded in `project-status.json` at commit `bab752b508ce0d0791b479c47e5fce86a723dbb8`.
+## Current owned stage
+B`eam-reconstruction-and-connectivity` is in progress. The next boundary is safe mapping of only reviewed/resolved reconstruction evidence to Core-compatible model data.
 
 ## Boundary conditions
-- Grid geometry output remains importer-private normalized-drawing evidence.
-- It is not yet canonical Core physical geometry.
-- Unresolved engineering scale must block physical-geometry writeback.
- - Do not map raw detector bounding boxes to Core grid axes.
-- Do not call PyNite directly.
-
-## Current stage: OCR & Grid Labeling
-
-GPT-6 next owned work:
-- define importer-private OCR evidence with source/page provenance, bounding geometry, text, confidence and engine/version;
-- detect grid bubble/label regions and run OCR as evidence, not canonical geometry;
-- associate label evidence to reconstructed grid axes using geometric proximity/endpoint bubble eridence;
-- preserve ambiguous/competing labels as review-required;
-- add deterministic tests before scale calibration.
+- YoLO/OCR/detector bounding boxes are evidence, not canonical engineering geometry.
+ - Do not write raw pixel or normalized-drawing coordinates into Core.
+- Canonical geometry must use global coordinates, explicit project units, and stable IDs and must validate against Core v0.5.
+- Unresolved scale blocks canonical physical-geometry writeback.
+- A column plan detection alone must not create a canonical vertical Member.
+ - A beam must have two resolved, distinct structural nodes before canonical Member creation.
+- Do not call PyNite directly; analysis belongs behind the Core-defined PyNite Analysis Adapter.
 
 ## Remaining cross-product blockers
 1. Core v0.5 fixture validation is not yet wired to the Core TypeScript validator/CI.
-2. Scale calibration is not yet implemented; unresolved scale correctly blocks canonical physical geometry writeback.
+2. Canonical physica-geometry writeback requires reliable resolved scale evidence for each relevant source page.
+3. Production reconstruction verification has not been claimed.
