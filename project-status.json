@@ -3,12 +3,12 @@
   "repository": "dehghoon/linkoteq-drawing-reconstruction",
   "coreVersion": "0.5",
   "overallStatus": "in-progress",
-  "currentStage": "grid-extraction",
+  "currentStage": "ocr-grid-labeling",
   "stages": {
     "core-contract-and-mapping": "complete",
     "source-normalization-and-transforms": "complete",
-    "grid-extraction": "in-progress",
-    "ocr-grid-labeling": "not-started",
+    "grid-extraction": "complete",
+    "ocr-grid-labeling": "in-progress",
     "scale-calibration": "not-started",
     "column-detection-and-association": "not-started",
     "beam-reconstruction-and-connectivity": "not-started",
@@ -18,10 +18,12 @@
     "production-verification": "not-started"
   },
   "blockers": [
-    "Real vector-PDF and raster-image line extraction adapters are implemented and real-file grid pipeline tests are committed, but the latest full CI result for commit 58f79c5f601decac3e746d799c4f6c46990a16e1 has not been independently read through the current GitHub connector; Stage C remains in-progress until that verification evidence is recorded.",
-    "Core v0.5 fixture validation is not wired to the Core TyseScript validator/CI.",
+    "Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.",
     "Scale calibration from drawing evidence is not implemented; unresolved scale correctly blocks canonical physical geometry writeback."
   ],
+  "verificationEvidence": {
+    "gridExtraction": "Real-file vector PDF [normalized and reconstructed] grid pipeline and raster image [normalized and reconstructed] grid pipeline tests passed in GitHub Actions; user confirmed green CI after commit 58f79c5f601decac3e746d799c4f6c46990a16e1 and status commit."
+  },
   "standaloneMode": true,
   "integration": {
     "target": "Core StructuralModel 0.5",
