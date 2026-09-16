@@ -220,8 +220,8 @@ def _hough_lines(
     if lines is None:
         return ()
     result = []
-    for row in lines:
-        x1, y1, x2, y2 = row[0]
+    for row in np.asarray(lines).reshape(-1, 4):
+        x1, y1, x2, y2 = row
         result.append((float(x1), float(y1), float(x2), float(y2)))
     result.sort()
     return tuple(result)
@@ -282,102 +282,6 @@ def extract_raster_lines_from_pdf(
     *,
     page_index: int,
     source: SourcePageMetadata,
-    source_to_normalized: Transform2D,
+    source_to_normalized: Transform2DQ,
     settings: RasterLineSettings = RasterLineSettings(),
-) -> tuple[LineSegmentEvidence, ...]:
-    """Rasterize a PDF page deterministically and map Hough pixels to normalized geometry.
-
-    For pixel-space source metadata, the PDF is rendered to exactly source.width x
-    source.height pixels. For vector-space metadata, render pixels are mapped back to
-    PDF page coordinates before applying source_to_normalized.
-    """
-    if page_index != source.page_index:
-        raise LineExtractionError("page_index must match source metadata.")
-    fitz = _fitz()
-    np = _numpy()
-    cv2 = _cv2()
-    document = fitz.open(str(pdf_path))
-    try:
-        if page_index < 0 or page_index >= len(document):
-            raise LineExtractionError("PDF page_index is out of range.")
-        page = document[page_index]
-        rect = page.rect
-
-        if source.source_space == "vector":
-            if (
-                abs(float(rect.width) - source.width) > 1e-6
-                or abs(float(rect.height) - source.height) > 1e-6
-            ):
-                raise LineExtractionError(
-                    "PDF page dimensions do not match vector source metadata."
-                )
-            zoom = settings.render_dpi / 72.0
-            pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
-            pixel_to_source = Affine2D.from_rows(
-                (
-                    (float(rect.width) / pixmap.width, 0.0, 0.0),
-                    (0.0, float(rect.height) / pixmap.height, 0.0),
-                    (0.0, 0.0, 1.0),
-                )
-            )
-            pixel_to_normalized = pixel_to_source.then(source_to_normalized)
-        else:
-            target_width = int(round(source.width))
-            target_height = int(round(source.height))
-            if target_width <= 0 or target_height <= 0:
-                raise LineExtractionError("Pixel source dimensions must be positive.")
-            matrix = fitz.Matrix(
-                target_width / float(rect.width),
-                target_height / float(rect.height),
-            )
-            pixmap = page.get_pixmap(matrix=matrix, alpha=False)
-            if pixmap.width != target_width or pixmap.height != target_height:
-                raise LineExtractionError(
-                    "PDF rasterization did not match declared pixel source dimensions."
-                )
-            pixel_to_normalized = source_to_normalized
-
-        frame = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(
-            pixmap.height,
-            pixmap.width,
-            pixmap.n,
-        )
-        if pixmap.n == 4:
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2BGRA)
-        else:
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-        return _raster_evidence(
-            frame=frame,
-            source=source,
-            pixel_to_normalized=pixel_to_normalized,
-            settings=settings,
-        )
-    finally:
-        document.close()
-
-
-def extract_lines_from_pdf(
-    pdf_path: str | Path,
-    *,
-    page_index: int,
-    source: SourcePageMetadata,
-    source_to_normalized: Transform2D,
-    settings: RasterLineSettings = RasterLineSettings(),
-) -> tuple[LineSegmentEvidence, ...]:
-    """Select the Stage C adapter: native vector first, raster fallback otherwise."""
-    if source.has_vector_geometry:
-        return extract_vector_lines_from_pdf(
-            pdf_path,
-            page_index=page_index,
-            source=source,
-            source_to_normalized=source_to_normalized,
-        )
-    if source.has_raster_content:
-        return extract_raster_lines_from_pdf(
-            pdf_path,
-            page_index=page_index,
-            source=source,
-            source_to_normalized=source_to_normalized,
-            settings=settings,
-        )
-    raise LineExtractionError("PDF source metadata has neither vector nor raster content.")
+) 
