@@ -24,7 +24,7 @@ class ResolvedMemberEvidence:
 
 
 def to_core_member(evidence: ResolvedMemberEvidence) -> dict:
-    """Emit a Core-compatible Member only from fully resolved reviewed evidence."""
+    """Emit a Core-compatible beam Member only from fully resolved reviewed evidence."""
     if not evidence.id or not evidence.id.strip():
         raise MemberWritebackError("member requires a non-empty stable id")
     if not evidence.scale_resolved:
@@ -42,6 +42,7 @@ def to_core_member(evidence: ResolvedMemberEvidence) -> dict:
 
     return {
         "id": evidence.id,
+        "type": "beam",
         "startNodeId": evidence.start_node_id,
         "endNodeId": evidence.end_node_id,
         "materialId": evidence.material_id,
