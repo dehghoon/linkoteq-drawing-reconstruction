@@ -96,4 +96,6 @@ def test_beam_detection_cannot_enter_column_association():
             detection(class_name="beam"),
             Affine2D.identity(),
             (),
+            auto_snap_distance=1.0,
+            review_snap_distance=3.0,
         )
