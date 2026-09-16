@@ -18,9 +18,8 @@
     "production-verification": "not-started"
   },
   "blockers": [
-    "Stage C geometry reconstruction from normalized line-segment evidence is implemed, but real vector/raster line-extraction adapters (e.g., vector PFD/Hough/LSD/EDLines) are not yet wired.",
-    "Real-file PDF/image parser adapters are not yet implemented; normalization and grid geometry currently operate on explicit extracted page evidence.",
-    "Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.",
+    "Real vector-PDF and raster-image line extraction adapters are implemented and real-file grid pipeline tests are committed, but the latest full CI result for commit 58f79c5f601decac3e746d799c4f6c46990a16e1 has not been independently read through the current GitHub connector; Stage C remains in-progress until that verification evidence is recorded.",
+    "Core v0.5 fixture validation is not wired to the Core TyseScript validator/CI.",
     "Scale calibration from drawing evidence is not implemented; unresolved scale correctly blocks canonical physical geometry writeback."
   ],
   "standaloneMode": true,
