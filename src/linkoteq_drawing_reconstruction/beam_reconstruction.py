@@ -61,8 +61,8 @@ def _nearest(point: Point2D, nodes: Sequence[StructuralNodeEvidence]) -> tuple[S
         ((hypot(point.x - n.point.x, point.y - n.point.y), n.id, n) for n in nodes),
         key=lambda v: (v[0], v[1]),
     )
-    d, _, nà= ranked[0]
-    return n, d
+    distance, _, node = ranked[0]
+    return node, distance
 
 
 def reconstruct_beam(
