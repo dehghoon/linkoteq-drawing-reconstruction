@@ -54,8 +54,9 @@ def _require_stable_ids(records: Sequence[object], record_name: str) -> None:
 
 
 def _vec3(point: object) -> dict[str, float]:
-    return {"x": point.x, "y": point.y, "z": point.zm
+    return {"x": point.x, "y": point.y, "z": point.zm,
 
+            }
 
 def map_minimal_structural_model(
     *,
