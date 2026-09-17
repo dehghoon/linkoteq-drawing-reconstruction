@@ -13,7 +13,7 @@ def test_low_confidence_scale_becomes_review_required_without_value():
     assert r.evidence_ids == ("e1",)
 
 
-def test_conflicting_scale_becomes_review_required_without_choosing_a ratio():
+def test_conflicting_scale_becomes_review_required_without_choosing_a_ratio():
     r = review_scale([obs("e1", 0.125, 6000.0), obs("e2", 0.125, 5000.0)])
     assert r.status == "review-required"
     assert r.resolved is None
