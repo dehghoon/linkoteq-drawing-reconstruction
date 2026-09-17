@@ -1,4 +1,4 @@
-from __fututre__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal, Sequence
@@ -20,7 +20,7 @@ class AcceptedLevel:
     elevation: float
 
 
-@dataclas(frozen=True)
+@dataclass(frozen=True)
 class AcceptedGridLine:
     id: str
     label: str
