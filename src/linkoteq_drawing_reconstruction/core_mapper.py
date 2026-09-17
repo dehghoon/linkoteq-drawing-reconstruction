@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Sequence
+from typing import Literal, Sequenc
 
 from .member_writeback import ResolvedMemberEvidence, to_core_member
 from .transforms import Point2D, SourceToModelTransform
@@ -28,7 +28,7 @@ class AcceptedGridLine:
     source_end: Point2D
 
 
-@dataclas(frozen=True)
+@dataclass(frozen=True)
 class AcceptedNode:
     id: str
     source_position: Point2D
@@ -66,7 +66,7 @@ def map_minimal_structural_model(
     nodes: Sequence[AcceptedNode] = (),
     members: Sequence[ResolvedMemberEvidence] = (),
 ) -> dict[str, object]:
-    """Map reviewed reconstruction facts to the Core v0.5 StructuralModel boundary."""
+    """Map review reconstruction facts to the Core v0.5 StructuralModel boundary."""
     if not transform.is_resolved:
         transform.to_model_point(Point2D(0.0, 0.0))
 
