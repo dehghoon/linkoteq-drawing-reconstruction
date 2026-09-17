@@ -1,4 +1,3 @@
-"""Boundary mapper from reviewed reconstruction facts to Core v0.5 records.""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -11,7 +10,7 @@ CORE_SCHEMA_VERSION = "0.5"
 
 
 class CoreMappingError(ValueError):
-    """Raised when reconstruction facts do not satisfy Core writeback gates."""
+    pass
 
 
 @dataclass(frozen=True)
@@ -55,7 +54,7 @@ def _require_stable_ids(records: Sequence[object], record_name: str) -> None:
 
 
 def _vec3(point) -> dict[str, float]:
-    return {"x": point.x, "y": point.y, "z": point.z}
+    return {"x": point.x, "y": point.y, "z": point.zm
 
 
 def map_minimal_structural_model(
@@ -67,7 +66,6 @@ def map_minimal_structural_model(
     nodes: Sequence[AcceptedNode] = (),
     members: Sequence[ResolvedMemberEvidence] = (),
 ) -> dict:
-    """Map only reviewed and resolved facts to Core v0.5."""
     if not transform.is_resolved:
         raise UnresolvedTransformError("Core mapping is blocked until T_source_to_model is fully resolved.")
 
@@ -111,6 +109,12 @@ def map_minimal_structural_model(
         "grids": mapped_grids,
         "nodes": mapped_nodes,
         "members": mapped_members,
-        "surfaces": [], "diaphragms": [], "materials": [], "sections": [],
-        "supports": [], "loadCases": [], "loads": [], "loadCombinations": [],
+        "surfaces": [],
+        "diaphragms": [],
+        "materials": [],
+        "sections": [],
+        "supports": [],
+        "loadCases": [],
+        "loads": [],
+        "loadCombinations": [],
     }
