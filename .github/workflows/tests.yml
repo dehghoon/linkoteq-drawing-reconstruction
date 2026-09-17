@@ -44,7 +44,7 @@ jobs:
 
       - name: Install Core dependencies
         working-directory: .core
-        run: npm ci
+        run: npm install
 
       - name: Generate Core contract fixture typecheck
         run: |
