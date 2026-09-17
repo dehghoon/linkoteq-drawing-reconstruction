@@ -64,7 +64,7 @@ def map_minimal_structural_model(
     if not transform.is_resolved:
         raise UnresolvedTransformError("Core mapping is blocked until T_source_to_model is fully resolved.")
 
-    _require_stable_ids(levels, "Level")
+    _require_stable_ids( levels, "Level")
     _require_stable_ids(grids, "GridLine")
     _require_stable_ids(nodes, "Node")
     _require_stable_ids(members, "Member")
