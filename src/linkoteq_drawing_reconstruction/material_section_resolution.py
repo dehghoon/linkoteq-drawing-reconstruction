@@ -32,7 +32,7 @@ class ReferenceCandidate:
             raise MaterialSectionResolutionError("confidence must be between 0 and 1")
 
 
-@dataclas(frozen=True)
+@dataclass(frozen=True)
 class ReferenceResolution:
     kind: Literal["material", "section"]
     status: ResolutionStatus
