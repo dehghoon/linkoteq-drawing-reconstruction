@@ -25,10 +25,10 @@
   ],
   "verificationEvidence": {
     "coreContract": "GitHub Actions run #90 succeeded for commit a0a8d8712a4f54e196865d3e9ffc170b743f8da6; Core v0.5 fixture is checked against the real Structural Core TypeScript contract in CI.",
-    "gridExtraction": "Real-file vector PDF and raster PNG pipelines verified in GitHub Actions.",
+    "gridExtraction": "Real-file vector PGF and raster PNG pipelines verified in GitHub Actions.",
     "ocrGridLabeling": "GitHub Actions run #93 succeeded for commit 1a42e778fe5d697fef64e4283082319fe21211eb; deterministic OCR normalization/review tests passed.",
     "scaleCalibration": "GitHub Actions run #94 succeeded for commit 1889f877fd9b35a006ec6100319d53d635b66c5e; scale review/writeback boundary tests passed.",
-    "detectionBoundary": "StructuralDetectionEvidence remains importer-private evidence with can_write_core_geometry=False. Detector lifecycle ownership is migrating to GPT-7 repository dehghoon/linkoteq-structural-detection.",
+    "detectionBoundary": "GitHub Actions run #105 succeeded for commit ad697353f4bcd3480c34bb1264ab9f61813d900d after migrating GPT-6 consumer fixtures to require explicit coordinate_space and provenance for StructuralDetectionEvidence v0.1; pytest and Core v0.5 fixture typecheck both passed.",
     "columnAssociation": "Importer-private column geometry association is covered by tests; a plan detection does not establish vertical member extent.",
     "beamReconstruction": "Beam centerline/endpoint association, review thresholds, and distinct-endpoint-node guard are covered by tests."
   },
