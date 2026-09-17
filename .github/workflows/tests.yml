@@ -19,6 +19,21 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[line-extraction]" pytest
 
+      - name: Prove checked-out mapper bytes
+        run: |
+          git rev-parse HEAD
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("src/linkoteq_drawing_reconstruction/core_mapper.py")
+          print("MAPPER_PATH:", p.resolve())
+          text = p.read_text()
+          print("HAS_DATACLASS_IMPORT:", "from dataclasses import dataclass" in text)
+          print("HAS_BAD_DECORATOR:", "@dataclas(" in text)
+          for i, line in enumerate(text.splitlines(), 1):
+              if i <= 40:
+                  print(f"{i:03d}: {line}")
+          PY
+
       - name: Diagnose Python imports
         run: |
           python - <<'PY'
