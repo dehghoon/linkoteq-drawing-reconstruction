@@ -20,8 +20,10 @@ def detection(class_name="column", box=None):
         class_name=class_name,
         confidence=0.95,
         source_box=box or SourceBox2D(9.0, 9.0, 11.0, 11.0),
+        coordinate_space="source-page",
         model_name="structural-detector",
         model_version="0.1.0",
+        provenance="gpt7-fixture",
     )
 
 
