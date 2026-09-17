@@ -1,8 +1,4 @@
-"""Deterministic importer-private scale calibration.
-
-Scale is derived only from explicit engineering evidence. Unresolved or
-conflicting evidence must not produce canonical physical geometry.
-"""
+"""Deterministic importer-private scale calibration."""
 from __future__ import annotations
 from dataclasses import dataclass
 from math import isfinite
@@ -11,28 +7,20 @@ from typing import Literal, Sequence
 
 from .transforms import Affine2D, CalibrationEvidence
 
-
 ScaleMethod = Literal[
-    "vector-geometry",
-    "printed-scale",
-    "ocr-dimension",
-    "known-grid-spacing",
-    "user-calibration",
+    "vector-geometry", "printed-scale", "ocr-dimension",
+    "known-grid-spacing", "user-calibration",
 ]
 ScaleReviewStatus = Literal["auto-accepted", "review-required"]
-
 
 class ScaleCalibrationError(ValueError):
     pass
 
-
 class UnresolvedScaleError(ScaleCalibrationError):
     pass
 
-
 @dataclass(frozen=True)
 class ScaleObservation:
-    """One explicit length correspondence in normalized drawing space."""
     id: str
     source_id: str
     page_id: str
@@ -55,7 +43,6 @@ class ScaleObservation:
         if not 0.0 <= self.confidence <= 1.0:
             raise ScaleCalibrationError("confidence must be between 0 and 1")
 
-
 @dataclass(frozen=True)
 class ResolvedScale:
     length_unit: str
@@ -66,8 +53,7 @@ class ResolvedScale:
 
     def normalized_to_model_xy(self, *, origin_x: float = 0.0, origin_y: float = 0.0) -> Affine2D:
         s = self.engineering_per_normalized
-        return Affine2D.from_rows((s())
-
+        return Affine2D.from_rows(((s, 0.0, origin_x), (0.0, s, origin_y)))
 
 @dataclass(frozen=True)
 class ScaleReviewResult:
@@ -79,7 +65,7 @@ class ScaleReviewResult:
 def resolve_scale(observations: Sequence[ScaleObservation], *, min_confidence: float = 0.75, max_relative_residual: float = 0.02) -> ResolvedScale:
     if not 0.0 <= min_confidence <= 1.0 or max_relative_residual < 0:
         raise ScaleCalibrationError("invalid scale resolution thresholds")
-    accepted = [o for o in observations if o.confidence >= min_confidence]
+    accepted = o for o in observations if o.confidence >= min_confidence
     if not accepted:
         raise UnresolvedScaleError("no reliable scale evidence")
     pages = {(o.source_id, o.page_id) for o in accepted}
