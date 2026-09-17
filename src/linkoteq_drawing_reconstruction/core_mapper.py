@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Sequenc
+from typing import Literal
 
 from .member_writeback import ResolvedMemberEvidence, to_core_member
 from .transforms import Point2D, SourceToModelTransform
@@ -42,7 +42,7 @@ class CoreProjectContext:
     units: Literal["SI", "US"]
 
 
-def _require_stable_ids(records: Sequence[object], record_name: str) -> None:
+def _require_stable_ids(records: list[object] | tuple[object, ...], record_name: str) -> None:
     ids: list[str] = []
     for record in records:
         value = getattr(record, "id", None)
@@ -61,12 +61,12 @@ def map_minimal_structural_model(
     *,
     project: CoreProjectContext,
     transform: SourceToModelTransform,
-    levels: Sequence[AcceptedLevel] = (),
-    grids: Sequence[AcceptedGridLine] = (),
-    nodes: Sequence[AcceptedNode] = (),
-    members: Sequence[ResolvedMemberEvidence] = (),
+    levels: list[AcceptedLevel] | tuple[AcceptedLevel, ...] = (),
+    grids: list[AcceptedGridLine] | tuple[AcceptedGridLine, ...] = (),
+    nodes: list[AcceptedNode] | tuple[AcceptedNode, ...] = (),
+    members: list[ResolvedMemberEvidence] | tuple[ResolvedMemberEvidence, ...] = (),
 ) -> dict[str, object]:
-    """Map review reconstruction facts to the Core v0.5 StructuralModel boundary."""
+    """Map reviewed reconstruction facts to the Core v0.5 StructuralModel boundary."""
     if not transform.is_resolved:
         transform.to_model_point(Point2D(0.0, 0.0))
 
