@@ -11,8 +11,10 @@ def test_same_node_beam_endpoints_require_review():
         class_name="beam",
         confidence=0.95,
         source_box=SourceBox2D(0, -1, 2, 1),
+        coordinate_space="source-page",
         model_name="detector",
         model_version="v1",
+        provenance="gpt7-fixture",
     )
     nodes = (StructuralNodeEvidence("n-1", Point2D(1, 0)),)
 
