@@ -18,10 +18,10 @@
     "production-verification": "not-started"
   },
   "blockers": [
-    "Core v0.5 fixture validation is not wired to the Core TypeScript validator/CI.",
     "Canonical physical geometry writeback remains blocked when a source page has no reliable resolved scale evidence."
   ],
   "verificationEvidence": {
+    "coreContract": "Core v0.5 fixture is wired to CI: the real Structural Core repository is checked out, dependencies are installed, and the reconstruction fixture is TypeScript type-checked against the Core contract. User confirmed green CI after commit 9a0fede.",
     "gridExtraction": "Real-file vector PDF and raster PNG pipelines verified in GitHub Actions.",
     "scaleCalibration": "Deterministic explicit-evidence scale resolver and unresolved/conflicting scale blocking are covered by tests/test_scale_calibration.py.",
     "columnAssociation": "Importer-private column association is present and covered by tests/test_column_association.py.",
