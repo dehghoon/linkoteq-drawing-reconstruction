@@ -17,9 +17,11 @@ def detection(*, class_name="beam", box=SourceBox2D(10, 19, 90, 21)):
         class_name=class_name,
         confidence=0.95,
         source_box=box,
+        coordinate_space="source-page",
         model_name="detector",
         model_version="v1",
-    )
+        provenance="gpt7-fixture",
+     )
 
 
 def nodes():
@@ -49,7 +51,7 @@ def test_vertical_beam_uses_long_axis_centerline():
     n = (
         StructuralNodeEvidence("a", Point2D(20, 10)),
         StructuralNodeEvidence("b", Point2D(20, 90)),
-     )
+    )
     r = reconstruct_beam(d, Affine2D.identity(), n, auto_endpoint_distance=1, review_endpoint_distance=5)
     assert r.start == Point2D(20, 10)
     assert r.end == Point2D(20, 90)
