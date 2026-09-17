@@ -59,8 +59,11 @@ class ResolvedScale:
         if not self.human_confirmed:
             raise UnresolvedScaleError("scale requires human confirmation before physical-geometry writeback")
         s = self.engineering_per_normalized
-        return Affine2D.from_rows(((s, 0.0, origin_x), (0.0, s, origin_y)))
-
+        return Affine2D.from_rows((
+            (s, 0.0, origin_x),
+            (0.0, s, origin_y),
+            (0.0, 0.0, 1.0),
+         ))
 
 @dataclass(frozen=True)
 class ScaleReviewResult:
@@ -70,12 +73,7 @@ class ScaleReviewResult:
     evidence_ids: tuple[str, ...]
 
 
-def resolve_scale(
-    observations: Sequence[ScaleObservation],
-    *,
-    min_confidence: float = 0.75,
-    max_relative_residual: float = 0.02,
-) -> ResolvedScale:
+def resolve_scale(observations: Sequence[ScaleObservation], *, min_confidence: float = 0.75, max_relative_residual: float = 0.02) -> ResolvedScale:
     if not 0.0 <= min_confidence <= 1.0 or max_relative_residual < 0:
         raise ScaleCalibrationError("invalid scale resolution thresholds")
     accepted = [o for o in observations if o.confidence >= min_confidence]
@@ -92,55 +90,23 @@ def resolve_scale(
         raise UnresolvedScaleError("conflicting scale evidence requires human review")
     unit = next(iter(units))
     methods = sorted({o.method for o in accepted})
-    calibration = CalibrationEvidence(
-        method=accepted[0].method if len(methods) == 1 else "user-calibration",
-        length_unit=unit,
-        residual=residual,
-        note="scale-solver: " + ";".join(methods),
-    )
-    return ResolvedScale(
-        unit,
-        scale,
-        tuple(sorted(o.id for o in accepted)),
-        residual,
-        calibration,
-        human_confirmed=False,
-    )
+    calibration = CalibrationEvidence(method=accepted[0].method if len(methods) == 1 else "user-calibration", length_unit=unit, residual=residual, note="scale-solver: " + ";".join(methods))
+    return ResolvedScale(unit, scale, tuple(sorted(o.id for o in accepted)), residual, calibration, human_confirmed=False)
 
 
-def review_scale(
-    observations: Sequence[ScaleObservation],
-    *,
-    min_confidence: float = 0.75,
-    max_relative_residual: float = 0.02,
-) -> ScaleReviewResult:
+def review_scale(observations: Sequence[ScaleObservation], *, min_confidence: float = 0.75, max_relative_residual: float = 0.02) -> ScaleReviewResult:
     evidence_ids = tuple(sorted(o.id for o in observations))
     try:
-        proposed = resolve_scale(
-            observations,
-            min_confidence=min_confidence,
-            max_relative_residual=max_relative_residual,
-        )
+        proposed = resolve_scale(observations, min_confidence=min_confidence, max_relative_residual=max_relative_residual)
     except UnresolvedScaleError as exc:
         return ScaleReviewResult("review-required", None, str(exc), evidence_ids)
-    return ScaleReviewResult(
-        "review-required",
-        proposed,
-        "human confirmation required for scale before physical-geometry writeback",
-        proposed.evidence_ids,
-    )
+    return ScaleReviewResult("review-required", proposed, "human confirmation required for scale before physical-geometry writeback", proposed.evidence_ids)
 
 
-def confirm_scale(
-    review: ScaleReviewResult,
-    *,
-    engineering_per_normalized: float | None = None,
-    length_unit: str | None = None,
-) -> ResolvedScale:
+def confirm_scale(review: ScaleReviewResult, *, engineering_per_normalized: float | None = None, length_unit: str | None = None) -> ResolvedScale:
     """Confirm a proposed scale, or supply explicit user calibration when no proposal exists."""
     if review.status != "review-required":
         raise ScaleCalibrationError("scale review is not awaiting confirmation")
-
     if review.resolved is not None:
         proposed = review.resolved
         value = proposed.engineering_per_normalized if engineering_per_normalized is None else engineering_per_normalized
@@ -149,23 +115,14 @@ def confirm_scale(
         residual = proposed.residual
     else:
         if engineering_per_normalized is None or length_unit is None:
-            raise UnresolvedScaleError(
-                "unresolved scale requires user-confirmed engineering_per_normalized and length_unit"
-            )
+            raise UnresolvedScaleError("unresolved scale requires user-confirmed engineering_per_normalized and length_unit")
         value = engineering_per_normalized
         unit = length_unit
         evidence_ids = review.evidence_ids
         residual = 0.0
-
     if not isfinite(value) or value <= 0:
         raise ScaleCalibrationError("confirmed scale must be finite and positive")
     if not unit.strip():
         raise ScaleCalibrationError("confirmed length_unit must be explicit")
-
-    calibration = CalibrationEvidence(
-        method="user-calibration",
-        length_unit=unit,
-        residual=residual,
-        note="human-confirmed scale",
-    )
+    calibration = CalibrationEvidence(method="user-calibration", length_unit=unit, residual=residual, note="human-confirmed scale")
     return ResolvedScale(unit, value, evidence_ids, residual, calibration, human_confirmed=True)
