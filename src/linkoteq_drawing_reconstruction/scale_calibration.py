@@ -4,7 +4,6 @@ Scale is derived only from explicit engineering evidence. Unresolved or
 conflicting evidence must not produce canonical physical geometry.
 """
 from __future__ import annotations
-
 from dataclasses import dataclass
 from math import isfinite
 from statistics import median
@@ -20,6 +19,7 @@ ScaleMethod = Literal[
     "known-grid-spacing",
     "user-calibration",
 ]
+ScaleReviewStatus = Literal["auto-accepted", "review-required"]
 
 
 class ScaleCalibrationError(ValueError):
@@ -70,6 +70,15 @@ class ResolvedScale:
         return Affine2D.from_rows(((s, 0.0, origin_x), (0.0, s, origin_y), (0.0, 0.0, 1.0)))
 
 
+@dataclass(frozen=True)
+class ScaleReviewResult:
+    """Non-guessing review surface for scale resolution."""
+    status: ScaleReviewStatus
+    resolved: ResolvedScale | None
+    reason: str | None
+    evidence_ids: tuple[str, ...]
+
+
 def resolve_scale(
     observations: Sequence[ScaleObservation],
     *,
@@ -79,7 +88,8 @@ def resolve_scale(
     """Resolve a uniform scale only when explicit high-confidence evidence agrees."""
     if not 0.0 <= min_confidence <= 1.0 or max_relative_residual < 0:
         raise ScaleCalibrationError("invalid scale resolution thresholds")
-    accepted = [o for o in observations if o.confidence >= min_confidence]
+    accepted = [o
+ for o in observations if o.confidence >= min_confidence]
     if not accepted:
         raise UnresolvedScaleError("no reliable scale evidence")
     pages = {(o.source_id, o.page_id) for o in accepted}
@@ -90,7 +100,7 @@ def resolve_scale(
     ratios = [o.engineering_length / o.normalized_length for o in accepted]
     scale = median(ratios)
     residual = max(abs(r - scale) / scale for r in ratios)
-    if residual > max_relative_residual:
+   if residual > max_relative_residual:
         raise UnresolvedScaleError("conflicting scale evidence requires human review")
 
     unit = next(iter(units))
@@ -102,3 +112,18 @@ def resolve_scale(
         note="scale-solver:" + ";".join(methods),
     )
     return ResolvedScale(unit, scale, tuple(sorted(o.id for o in accepted)), residual, calibration)
+
+
+def review_scale(
+    observations: Sequence[ScaleObservation],
+    *,
+    min_confidence: float = 0.75,
+    max_relative_residual: float = 0.02,
+) -> ScaleReviewResult:
+    """Return review evidence instead of inventing a scale when resolution fails."""
+    evidence_ids = tuple(sorted(o.id for o in observations))
+    try:
+        resolved = resolve_scale(observations, min_confidence=min_confidence, max_relative_residual=max_relative_residual)
+    except UnresolvedScaleError as exc:
+        return ScaleReviewResult("review-required", None, str(exc), evidence_ids)
+    return ScaleReviewResult("auto-accepted", resolved, None, resolved.evidence_ids)
