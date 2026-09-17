@@ -1,0 +1,3 @@
+CI HEAD verification trigger
+
+This file intentionally triggers GitHub Actions against the current main tree to distinguish stale run failures from the current repository state.
