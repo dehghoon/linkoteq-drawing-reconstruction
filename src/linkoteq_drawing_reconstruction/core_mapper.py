@@ -13,11 +13,13 @@ CORE_SCHEMA_VERSION = "0.5"
 class CoreMappingError(ValueError):
     """Raised when reconstruction facts do not satisfy Core writeback gates."""
 
+
 @dataclass(frozen=True)
 class AcceptedLevel:
     id: str
     name: str
     elevation: float
+
 
 @dataclass(frozen=True)
 class AcceptedGridLine:
@@ -26,17 +28,20 @@ class AcceptedGridLine:
     source_start: Point2D
     source_end: Point2D
 
+
 @dataclass(frozen=True)
 class AcceptedNode:
     id: str
     source_position: Point2D
     level_id: str | None = None
 
+
 @dataclass(frozen=True)
 class CoreProjectContext:
     id: str
     name: str
     units: Literal["SI", "US"]
+
 
 def _require_stable_ids(records: Sequence[object], record_name: str) -> None:
     ids: list[str] = []
@@ -48,8 +53,10 @@ def _require_stable_ids(records: Sequence[object], record_name: str) -> None:
     if len(ids) != len(set(ids)):
         raise CoreMappingError(f"Duplicate {record_name} ids are not allowed.")
 
+
 def _vec3(point) -> dict[str, float]:
     return {"x": point.x, "y": point.y, "z": point.z}
+
 
 def map_minimal_structural_model(
     *,
@@ -64,7 +71,7 @@ def map_minimal_structural_model(
     if not transform.is_resolved:
         raise UnresolvedTransformError("Core mapping is blocked until T_source_to_model is fully resolved.")
 
-    _require_stable_ids( levels, "Level")
+    _require_stable_ids(levels, "Level")
     _require_stable_ids(grids, "GridLine")
     _require_stable_ids(nodes, "Node")
     _require_stable_ids(members, "Member")
