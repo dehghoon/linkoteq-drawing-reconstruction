@@ -2,7 +2,7 @@
 
 Detection/OCR is evidence only. This module never invents Core analysis properties.
 """
-from __future_ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal, Sequence
@@ -32,7 +32,7 @@ class ReferenceCandidate:
             raise MaterialSectionResolutionError("confidence must be between 0 and 1")
 
 
-@dataclass(frozen=True)
+@dataclas(frozen=True)
 class ReferenceResolution:
     kind: Literal["material", "section"]
     status: ResolutionStatus
