@@ -12,6 +12,7 @@ from typing import Literal
 
 StructuralClass = Literal["column", "beam"]
 DetectionState = Literal["auto-accepted", "review-required", "rejected", "preserved-off-grid"]
+CoordinateSpace = Literal["source-page"]
 
 
 class StructuralDetectionError(ValueError):
@@ -42,15 +43,40 @@ class StructuralDetectionEvidence:
     class_name: StructuralClass
     confidence: float
     source_box: SourceBox2D
+    coordinate_space: CoordinateSpace
     model_name: str
     model_version: str
+    provenance: str
     state: DetectionState = "review-required"
 
     def __post_init__(self) -> None:
-        if not all(value.strip() for value in (self.id, self.source_id, self.page_id, self.model_name, self.model_version)):
-            raise StructuralDetectionError("identity, provenance, and model metadata must be non-empty")
-        if not 0.0 <= self.confidence <= 1.0:
-            raise StructuralDetectionError("confidence must be between 0 and 1")
+        if not all(
+            value.strip()
+            for value in (
+                self.id,
+                self.source_id,
+                self.page_id,
+                self.model_name,
+                self.model_version,
+                self.provenance,
+            )
+        ):
+            raise StructuralDetectionError(
+                "identity, provenance, and model metadata must be non-empty"
+            )
+        if self.class_name not in ("column", "beam"):
+            raise StructuralDetectionError("class_name must be column or beam")
+        if not isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
+            raise StructuralDetectionError("confidence must be finite and between 0 and 1")
+        if self.coordinate_space != "source-page":
+            raise StructuralDetectionError("coordinate_space must be source-page")
+        if self.state not in (
+            "auto-accepted",
+            "review-required",
+            "rejected",
+            "preserved-off-grid",
+        ):
+            raise StructuralDetectionError("unsupported detection state")
 
     @property
     def can_write_core_geometry(self) -> bool:
