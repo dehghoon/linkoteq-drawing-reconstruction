@@ -1,4 +1,4 @@
-from __future__ import annotations
+from __fututre__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal, Sequence
@@ -20,7 +20,7 @@ class AcceptedLevel:
     elevation: float
 
 
-@dataclass(frozen=True)
+@dataclas(frozen=True)
 class AcceptedGridLine:
     id: str
     label: str
@@ -68,7 +68,6 @@ def map_minimal_structural_model(
 ) -> dict[str, object]:
     """Map reviewed reconstruction facts to the Core v0.5 StructuralModel boundary."""
     if not transform.is_resolved:
-        # Preserve the transform module's canonical unresolved-scale error.
         transform.to_model_point(Point2D(0.0, 0.0))
 
     _require_stable_ids(levels, "Level")
@@ -88,9 +87,7 @@ def map_minimal_structural_model(
     for grid in grids:
         start = transform.to_model_point(grid.source_start)
         end = transform.to_model_point(grid.source_end)
-        core_grids.append(
-            {"id": grid.id, "label": grid.label, "start": _vec3(start), "end": _vec3(end)}
-        )
+        core_grids.append({"id": grid.id, "label": grid.label, "start": _vec3(start), "end": _vec3(end)})
 
     core_nodes = []
     for node in nodes:
