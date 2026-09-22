@@ -17,7 +17,8 @@
     "human-review": "in-progress",
     "core-writeback": "in-progress",
     "integration": "not-started",
-    "production-verification": "not-started"
+    "production-verification": "not-started",
+    "structural-layout-proposal-boundary": "complete"
   },
   "blockers": [],
   "reviewConditions": [
@@ -30,14 +31,16 @@
     "scaleCalibration": "Complete: deterministic scale resolution/review/confirmation and physical-writeback gating are implemented. GitHub Actions run #94 succeeded for commit 1889f877fd9b35a006ec6100319d53d635b66c5e; scale review/writeback boundary tests passed. Unresolved scale is a per-source review condition, not a development blocker.",
     "detectionBoundary": "StructuralDetectionEvidence v0.2 ACTIVE at GPT-7→GPT-6 boundary. Detection activation commit b347a9380d291343b172a2d52ff0528d2a0530c5; migration verification blob 7c7622d968163394b9d02048d7b5f8cf8e83195b; duplicate gate blob cd5f293510acf17d1e21b6f2247610df601850b7; detection CI run #8 / ID 35688458443 SUCCESS; GPT-6 consumer CI run #119 / ID 35687979404 SUCCESS for commit ee9ee5db6d5c382b9eb72d0b3c399de4947987b1. Legacy v0.1 column/beam remains valid; v0.1 wall rejected; v0.2 wall accepted; source-page and traceable provenance required; detector evidence cannot directly authorize canonical/Core geometry. Activation does not imply detector training readiness.",
     "columnAssociation": "Importer-private column geometry association is covered by tests; a plan detection does not establish vertical member extent.",
-    "beamReconstruction": "Beam centerline/endpoint association, review thresholds, and distinct-endpoint-node guard are covered by tests."
+    "beamReconstruction": "Beam centerline/endpoint association, review thresholds, and distinct-endpoint-node guard are covered by tests.",
+    "structuralLayoutProposalBoundary": "StructuralLayoutProposal v0.1 implementation and required regression coverage verified by GitHub Actions run #123 / ID 35777030429 SUCCESS for commit 4bf41e930822601a4b474e0504b6d743d2b343ed. Proposal artifacts remain non-canonical/reviewable; proposed grids/columns remain distinguishable from observed evidence; grid intersections do not automatically create columns; provenance/source transform chains are preserved; unapproved proposals cannot write canonical Core geometry; approved proposals still require Core mapping/validation; proposals cannot be serialized as StructuralDetectionEvidence; existing StructuralDetectionEvidence v0.2 and legacy v0.1 regressions remain passing; no direct PyNite dependency introduced."
   },
   "standaloneMode": true,
   "integration": {
     "target": "Core StructuralModel 0.5",
     "directPyNiteDependencyAllowed": false,
     "detectorEvidenceSource": "dehghoon/linkoteq-structural-detection",
-    "detectorContract": "StructuralDetectionEvidence v0.2"
+    "detectorContract": "StructuralDetectionEvidence v0.2",
+    "proposalContract": "StructuralLayoutProposal v0.1"
   },
   "securityOwner": "GPT-5",
   "detectionOwner": "GPT-7",
