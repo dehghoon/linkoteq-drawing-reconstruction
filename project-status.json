@@ -19,9 +19,7 @@
     "integration": "not-started",
     "production-verification": "not-started"
   },
-  "blockers": [
-    "Production detector evidence from GPT-7 is not yet available; fusion must remain detector-agnostic and testable with fixtures."
-  ],
+  "blockers": [],
   "reviewConditions": [
     "Canonical physical-geometry writeback is blocked per source/page whenever reliable scale evidence is absent or the proposed scale has not been human-confirmed."
   ],
@@ -30,7 +28,7 @@
     "gridExtraction": "Real-file vector PDF and raster PNG pipelines verified in GitHub Actions.",
     "ocrGridLabeling": "GitHub Actions run #93 succeeded for commit 1a42e778fe5d697fef64e4283082319fe21211eb; deterministic OCR normalization/review tests passed.",
     "scaleCalibration": "Complete: deterministic scale resolution/review/confirmation and physical-writeback gating are implemented. GitHub Actions run #94 succeeded for commit 1889f877fd9b35a006ec6100319d53d635b66c5e; scale review/writeback boundary tests passed. Unresolved scale is a per-source review condition, not a development blocker.",
-    "detectionBoundary": "GitHub Actions run #105 succeeded for commit ad697353f4bcd3480c34bb1264ab9f61813d900d after migrating GPT-6 consumer fixtures to require explicit coordinate_space and provenance for StructuralDetectionEvidence v0.1; pytest and Core v0.5 fixture typecheck both passed.",
+    "detectionBoundary": "StructuralDetectionEvidence v0.2 ACTIVE at GPT-7→GPT-6 boundary. Detection activation commit b347a9380d291343b172a2d52ff0528d2a0530c5; migration verification blob 7c7622d968163394b9d02048d7b5f8cf8e83195b; duplicate gate blob cd5f293510acf17d1e21b6f2247610df601850b7; detection CI run #8 / ID 35688458443 SUCCESS; GPT-6 consumer CI run #119 / ID 35687979404 SUCCESS for commit ee9ee5db6d5c382b9eb72d0b3c399de4947987b1. Legacy v0.1 column/beam remains valid; v0.1 wall rejected; v0.2 wall accepted; source-page and traceable provenance required; detector evidence cannot directly authorize canonical/Core geometry. Activation does not imply detector training readiness.",
     "columnAssociation": "Importer-private column geometry association is covered by tests; a plan detection does not establish vertical member extent.",
     "beamReconstruction": "Beam centerline/endpoint association, review thresholds, and distinct-endpoint-node guard are covered by tests."
   },
@@ -39,7 +37,7 @@
     "target": "Core StructuralModel 0.5",
     "directPyNiteDependencyAllowed": false,
     "detectorEvidenceSource": "dehghoon/linkoteq-structural-detection",
-    "detectorContract": "StructuralDetectionEvidence v0.1"
+    "detectorContract": "StructuralDetectionEvidence v0.2"
   },
   "securityOwner": "GPT-5",
   "detectionOwner": "GPT-7",
