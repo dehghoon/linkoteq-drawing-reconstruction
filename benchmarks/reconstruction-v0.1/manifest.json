@@ -1,0 +1,23 @@
+{
+  "artifact_type": "reconstruction-benchmark-manifest",
+  "contract": "Reconstruction Continuous Improvement v0.1",
+  "benchmark_id": "reconstruction-contract-regression",
+  "version": "0.1.0",
+  "frozen": true,
+  "project_group_isolation": true,
+  "coverage": [
+    "no-grid",
+    "no-visible-column",
+    "incomplete-ambiguous-grids",
+    "column-beam-wall-detector-evidence",
+    "missing-conflicting-evidence",
+    "scale-confirmed-unresolved",
+    "topology-ambiguity",
+    "multi-page-level-consistency",
+    "observed-reconstructed-proposed",
+    "provenance-transforms",
+    "core-writeback-eligibility",
+    "legacy-detector-compatibility"
+  ],
+  "note": "Frozen contract-regression manifest. Reviewed production examples require separate immutable case artifacts."
+}
