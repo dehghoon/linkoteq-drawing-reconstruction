@@ -67,7 +67,7 @@ def test_confidence_must_be_bounded_and_finite():
     with pytest.raises(StructuralDetectionError, match="confidence"):
         make_evidence(confidence=float("nan"))
 
-def test_coordinate_space_is_explicit_and_source_page_only():
+def test_contract_requires_source_page():
     with pytest.raises(StructuralDetectionError, match="coordinate_space"):
         make_evidence(coordinate_space="model", contract_version="0.2")
 
