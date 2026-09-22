@@ -54,7 +54,7 @@ def test_preserves_provenance_and_model_metadata():
     assert e.state == "review-required"
 
 def test_raw_detector_evidence_never_authorizes_core_writeback():
-    for class_name, version in (("column","0.1"), ("beam","0.1"), ("wall","0.2"):
+    for class_name, version in (("column","0.1"), ("beam","0.1"), ("wall","0.2")):
         assert make_evidence(class_name=class_name, contract_version=version).can_write_core_geometry is False
 
 def test_source_box_must_have_positive_area():
