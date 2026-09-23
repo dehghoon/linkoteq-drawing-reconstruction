@@ -57,9 +57,10 @@ def _core_surface(surface: ResolvedWallSurface) -> dict[str, object]:
         raise CoreMappingError("Wall Surface requires traceable reconstruction basis and provenance.")
     return {
         "id": surface.id,
+        "type": "wall",
+        "boundaryNodeIds": [f"{surface.id}:boundary:{i}" for i in range(4)],
         "levelId": surface.level_id,
-        "boundary": [_vec3(point) for point in surface.boundary_points],
-        "thickness": surface.thickness,
+        "thickness": {"value": surface.thickness, "unit": surface.length_unit},
     }
 
 def map_minimal_structural_model(
@@ -109,7 +110,16 @@ def map_minimal_structural_model(
         core_nodes.append(item)
 
     core_members = [to_core_member(member) for member in members]
-    core_surfaces = [_core_surface(surface) for surface in surfaces]
+    core_surfaces = []
+    generated_node_ids = set(node.id for node in nodes)
+    for surface in surfaces:
+        boundary_ids = [f"{surface.id}:boundary:{i}" for i in range(4)]
+        if generated_node_ids.intersection(boundary_ids):
+            raise CoreMappingError(f"Surface {surface.id!r} boundary node ids collide with existing nodes.")
+        for node_id, point in zip(boundary_ids, surface.boundary_points):
+            core_nodes.append({"id": node_id, "position": _vec3(point), "levelId": surface.level_id})
+            generated_node_ids.add(node_id)
+        core_surfaces.append(_core_surface(surface))
 
     return {
         "schemaVersion": CORE_SCHEMA_VERSION,
