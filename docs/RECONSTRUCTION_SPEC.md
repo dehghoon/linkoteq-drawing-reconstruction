@@ -1,4 +1,4 @@
-# GPT-6 Drawiing Reconstruction Specification
+# GPT-6 Drawing Reconstruction Specification
 
 ## Objective
 Convert structural drawing evidence into reviewed, Core-compatible structural geometry. GPT-6 owns engineering reconstruction; GPT-7 owns structural object detection ML.
@@ -26,11 +26,15 @@ PDF/Image
 ```
 
 ## GPT-7 detection boundary
-Initial semantic classes are `column` and `beam`. Dataset lifecycle, annotation, detector selection/benchmark, training/fine-tuning, evaluation, active learning, model registry/artifact approval, and framework-specific inference belong to GPT-7 in `deghoon/linkoteq-structural-detection`.
+The currently approved active `StructuralDetectionEvidence v0.2` boundary supports exactly `column`, `beam`, and `wall`. Required legacy v0.1 compatibility remains: valid v0.1 `column` and `beam` evidence is accepted under its contract, while a v0.1 `wall` record MUST be rejected.
 
-GPT-6 consumes detector-agnostic `StructuralDetectionEvidence` with stable identity, source/page provenance, semantic class, confidence, source-space geometry, model name/version, and review state.
+Dataset lifecycle, annotation, detector selection/benchmark, training/fine-tuning, evaluation, active learning, model registry/artifact approval, and framework-specific inference belong to GPT-7 in `dehghoon/linkoteq-structural-detection`.
 
-Detector output is evidence only. GPT-7 must not emit canonical `GridLine`, `Node`, `Member`, `Surface`, engineering scale, topology, or 3D geometry.
+GPT-6 consumes detector-agnostic StructuralDetectionEvidence only when it satisfies the declared active/legacy contract, including stable identity, source/page identity, semantic class, confidence, valid source geometry, model name/version, review state, explicit `coordinate_space: source-page`, and non-empty traceable provenance.
+
+Detector output is evidence only. GPT-7 must not emit canonical `GridLine`, `Node`, `Member`, `Surface`, engineering scale, topology, or 3D geometry. A detector `wall` box does not establish canonical wall centerline, boundary, thickness, endpoints, openings, elevation, vertical extent, connectivity, topology, or Core `Surface`.
+
+This documentation summarizes the approved detector contract; it does not redefine it. The current approved contract in `dehghoon/linkoteq-structural-detection` is authoritative.
 
 ## Coordinates
 Maintain deterministic source -> normalized drawing -> calibrated engineering -> global model coordinates, with explicit per-source/page transforms such as `T_source_to_model`. Never write raw source/pixel coordinates to Core.
@@ -48,23 +52,25 @@ Column evidence establishes a candidate horizontal location only. Associate usin
 
 Beam evidence identifies semantic/region evidence only. Reconstruct centerline and endpoints independently of bbox corners, associate stable structural nodes, and validate connectivity.
 
+Wall evidence is semantic/source-region evidence only. Canonical wall geometry requires GPT-6 reconstruction from sufficient traceable evidence and applicable review.
+
 ## Topology
 Topology owns connectivity. Resolve near-coincident nodes deterministically with engineering tolerances. Ambiguity triggers review.
 
 ## Review
-Use `auto-accepted`, `review-required`, `rejected`, and `preserved-off-grid`. Block or narrow writeback for unresolved scale, ambiguous OCR, competing associations, excessive snap distance, unresolved endpoints, conflicting duplicates, low-confidence evidence, or topology inconsistency.
+Use `auto-accepted`, `review-required`, `rejected`, and `preserved-off-grid` where defined by the detector evidence contract. Block or narrow writeback for unresolved scale, ambiguous OCR, competing associations, excessive snap distance, unresolved endpoints, conflicting duplicates, low-confidence evidence, or topology inconsistency.
 
 ## Core mapping
 Only reviewed/resolved engineering facts cross the Core boundary. Never call PyNite directly.
 
 ## Acceptance tests
-Controlled fixtures should verify grids/OCR, scale gates, GPT-7 evidence contract, off-grid preservation, column association, beam centerline/endpoints/connectivity, no unintended duplicate nodes, stable IDs, Core validation, and no direct PyNite dependency.
+Controlled fixtures should verify grids/OCR, scale gates, GPT-7 evidence contract including v0.2 `column`/`beam`/`wall`, legacy v0.1 column/beam compatibility and v0.1 wall rejection, source-page/provenance validation, off-grid preservation, column association, beam centerline/endpoints/connectivity, no unintended duplicate nodes, stable IDs, Core validation, and no direct PyNite dependency.
 
 ## Implementation continuation
 1. maintain Core mapper/contract tests;
 2. complete OCR/grid labeling and scale gates;
 3. validate GPT-7 handoff fixtures;
-4. complete column/beam fusion;
+4. complete column/beam/wall fusion;
 5. complete topology/levels;
 6. complete review/writeback gates;
 7. verify StructuralModel/3D integration.
