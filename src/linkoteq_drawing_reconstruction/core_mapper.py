@@ -48,7 +48,7 @@ def _require_stable_ids(records, record_name: str) -> None:
         raise CoreMappingError(f"Duplicate {record_name} ids are not allowed.")
 
 def _vec3(point: object) -> dict[str, float]:
-    return {"x": point.x, "y": point.y, "z": point.zm
+    return {"x": point.x, "y": point.y, "z": point.z}
 
 def _core_surface(surface: ResolvedWallSurface) -> dict[str, object]:
     if not surface.id.strip() or not surface.level_id.strip():
