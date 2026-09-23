@@ -5,20 +5,18 @@ from typing import Literal
 
 from .member_writeback import ResolvedMemberEvidence, to_core_member
 from .transforms import Point2D, SourceToModelTransform
+from .wall_reconstruction import ResolvedWallSurface
 
 CORE_SCHEMA_VERSION = "0.5"
 
-
 class CoreMappingError(ValueError):
     pass
-
 
 @dataclass(frozen=True)
 class AcceptedLevel:
     id: str
     name: str
     elevation: float
-
 
 @dataclass(frozen=True)
 class AcceptedGridLine:
@@ -27,13 +25,11 @@ class AcceptedGridLine:
     source_start: Point2D
     source_end: Point2D
 
-
 @dataclass(frozen=True)
 class AcceptedNode:
     id: str
     source_position: Point2D
     level_id: str | None = None
-
 
 @dataclass(frozen=True)
 class CoreProjectContext:
@@ -41,8 +37,7 @@ class CoreProjectContext:
     name: str
     units: Literal["SI", "US"]
 
-
-def _require_stable_ids(records: list[object] | tuple[object, ...], record_name: str) -> None:
+def _require_stable_ids(records, record_name: str) -> None:
     ids: list[str] = []
     for record in records:
         value = getattr(record, "id", None)
@@ -52,10 +47,20 @@ def _require_stable_ids(records: list[object] | tuple[object, ...], record_name:
     if len(ids) != len(set(ids)):
         raise CoreMappingError(f"Duplicate {record_name} ids are not allowed.")
 
-
 def _vec3(point: object) -> dict[str, float]:
-    return {"x": point.x, "y": point.y, "z": point.z}
+    return {"x": point.x, "y": point.y, "z": point.zm
 
+def _core_surface(surface: ResolvedWallSurface) -> dict[str, object]:
+    if not surface.id.strip() or not surface.level_id.strip():
+        raise CoreMappingError("Wall Surface requires stable id and levelId.")
+    if not surface.provenance or not surface.basis:
+        raise CoreMappingError("Wall Surface requires traceable reconstruction basis and provenance.")
+    return {
+        "id": surface.id,
+        "levelId": surface.level_id,
+        "boundary": [_vec3(point) for point in surface.boundary_points],
+        "thickness": surface.thickness,
+    }
 
 def map_minimal_structural_model(
     *,
@@ -65,6 +70,7 @@ def map_minimal_structural_model(
     grids: list[AcceptedGridLine] | tuple[AcceptedGridLine, ...] = (),
     nodes: list[AcceptedNode] | tuple[AcceptedNode, ...] = (),
     members: list[ResolvedMemberEvidence] | tuple[ResolvedMemberEvidence, ...] = (),
+    surfaces: list[ResolvedWallSurface] | tuple[ResolvedWallSurface, ...] = (),
 ) -> dict[str, object]:
     """Map reviewed reconstruction facts to the Core v0.5 StructuralModel boundary."""
     if not transform.is_resolved:
@@ -73,16 +79,21 @@ def map_minimal_structural_model(
     _require_stable_ids(levels, "Level")
     _require_stable_ids(grids, "GridLine")
     _require_stable_ids(nodes, "Node")
+    _require_stable_ids(surfaces, "Surface")
 
     level_ids = {level.id for level in levels}
     for node in nodes:
         if node.level_id is not None and node.level_id not in level_ids:
             raise CoreMappingError(f"Node {node.id!r} references unknown levelId {node.level_id!r}.")
+    for surface in surfaces:
+        if surface.level_id not in level_ids:
+            raise CoreMappingError(f"Surface {surface.id!r} references unknown levelId {surface.level_id!r}.")
+        if transform.source_id != surface.source_id or transform.page_id != surface.page_id:
+            raise CoreMappingError(f"Surface {surface.id!r} provenance does not match the active source/page transform.")
+        if surface.length_unit != transform.project_length_unit:
+            raise CoreMappingError(f"Surface {surface.id!r} length unit does not match the resolved transform.")
 
-    core_levels = [
-        {"id": level.id, "name": level.name, "elevation": level.elevation}
-        for level in levels
-    ]
+    core_levels = [{"id": level.id, "name": level.name, "elevation": level.elevation} for level in levels]
     core_grids = []
     for grid in grids:
         start = transform.to_model_point(grid.source_start)
@@ -98,6 +109,7 @@ def map_minimal_structural_model(
         core_nodes.append(item)
 
     core_members = [to_core_member(member) for member in members]
+    core_surfaces = [_core_surface(surface) for surface in surfaces]
 
     return {
         "schemaVersion": CORE_SCHEMA_VERSION,
@@ -106,7 +118,7 @@ def map_minimal_structural_model(
         "grids": core_grids,
         "nodes": core_nodes,
         "members": core_members,
-        "surfaces": [],
+        "surfaces": core_surfaces,
         "diaphragms": [],
         "materials": [],
         "sections": [],
