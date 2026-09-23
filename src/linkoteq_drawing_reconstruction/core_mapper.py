@@ -90,7 +90,9 @@ def map_minimal_structural_model(
         if surface.level_id not in level_ids:
             raise CoreMappingError(f"Surface {surface.id!r} references unknown levelId {surface.level_id!r}.")
         if transform.source_id != surface.source_id or transform.page_id != surface.page_id:
-            raise CoreMappingError(f"Surface {surface.id!r} provenance does not match the active source/page transform.")
+            raise CoreMappingError(
+                f"Surface {surface.id!r} provenance does not match the active source/page transform."
+            )
         if surface.length_unit != transform.project_length_unit:
             raise CoreMappingError(f"Surface {surface.id!r} length unit does not match the resolved transform.")
 
