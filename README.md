@@ -37,3 +37,12 @@ project-status.json
 GPT-6 owns drawing reconstruction functionality.
 GPT-4 coordinates Core compliance and integration.
 GPT-5 owns security-specific review.
+
+## Structural Core v0.6 coordination
+
+- Canonical source: [`dehghoon/linkoteq-structural-core`](https://github.com/dehghoon/linkoteq-structural-core/blob/main/CORE_CONTRACT.md).
+- Target package: `v0.6.0`; target structural model schema: `0.6`.
+- Core retains backward compatibility with schema `0.5`.
+- This is a coordination target only; it does not certify runtime migration, dependency updates, solver support, or deployment.
+- Core `v0.6.0` GitHub Release publication is tracked separately.
+- Existing engineering calculations, detection evidence, and application behavior are unchanged by this documentation-only update.
